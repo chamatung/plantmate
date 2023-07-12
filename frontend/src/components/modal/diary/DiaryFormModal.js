@@ -4,7 +4,7 @@ import { RootContext } from "../../../context/RootStore";
 import ApiService from "../../../services/ApiService";
 
 
-const DiaryFormModal = ({ showModal, setShowModal }) => {
+const DiaryFormModal = ({ showFormModal, setShowFormModal }) => {
 
     const { diaryFormInfo } = useContext(RootContext);
     const {diaryFormStore, diaryFormDispatch, diaryFormState} = diaryFormInfo;
@@ -25,7 +25,7 @@ const DiaryFormModal = ({ showModal, setShowModal }) => {
 
     const handleClear = () => {
         diaryFormDispatch({ type: "CLEAR_DIARY_FORM", payload: diaryFormStore.initialDiaryForm });
-        setShowModal(false)
+        setShowFormModal(false)
     };
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const DiaryFormModal = ({ showModal, setShowModal }) => {
 
     return (
         <Modal
-            show={showModal}
+            show={showFormModal}
             onHide={() => handleClear()}
             centered
             size="lg"

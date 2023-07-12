@@ -8,7 +8,9 @@ import DiaryDetailModal from "../modal/diary/DiaryDetailModal";
 import {RootContext} from "../../context/RootStore";
 
 const GrowthDiaryList = () => {
-    const [showModal, setShowModal] = useState(false);
+    const [showDetailModal, setShowDetailModal] = useState(false);
+    const [showFormModal, setShowFormModal] = useState(false);
+    const [detailRecordId, setDetailRecordId] = useState();
     const [isExpanded, setIsExpanded] = useState(false);
 
     const { diaryListInfo } = useContext(RootContext);
@@ -76,12 +78,20 @@ const GrowthDiaryList = () => {
         searchFuc();
     }
 
-    const openModalDiaryDetail = () => {
-        setShowModal(true);
+    const openModalDiaryDetail = (recordId) => {
+        setDetailRecordId(recordId);
+        setShowDetailModal(true);
+    }
+    const openModalDiaryForm = () => {
+        setShowFormModal(true);
     }
 
     const handleClear = () => {
         diaryListDispatch({type: "CLEAR_DIARY_LIST", payload: diaryListStore.initialDiaryList})
+    }
+
+    const handleDelete = (recordId) => {
+        diaryListStore.deleteDiary(recordId, searchFuc);
     }
 
 return (
@@ -169,6 +179,23 @@ return (
                 조회
               </Button>
             </Col>
+              <Col xs={{ order: "5", span: "4" }}
+                   sm={{ order: "5", span: "2" }}
+                   md={{ order: "5", span: "2" }}
+                   lg={{ order: "5", span: "1" }}
+                   style={{
+                       marginTop: "5px",
+                   }}> <Button
+                  variant='secondary'
+                  style={{
+                      width: "100%",
+                  }}
+                  onClick={() => {
+                      openModalDiaryForm();
+                  }}
+              >
+                  등록
+              </Button>></Col>
           </Row>
         </Row>
       </Container>
@@ -195,7 +222,7 @@ return (
             xl={3}
             style={{ margin: " 0 auto" }}
           >
-            {diaryList?.map((index) => {
+            {diaryList?.map((diary, index) => {
               return (
                 <Col key={index} className='card-column'>
                   <Card
@@ -219,11 +246,11 @@ return (
                         <Card.Text>
                             {"일지내용"}
                         </Card.Text>
-                        <Button variant='secondary' onClick={() => openModalDiaryDetail()}>상세정보</Button>
+                        <Button variant='secondary' onClick={() => openModalDiaryDetail(diary.recordId)}>상세정보</Button>
                         <Button variant='secondary' style={{
                             margin: "5px",
                         }}
-                        onClick={() => openModalDiaryDetail()}
+                        onClick={() => handleDelete(diary.recordId)}
                         >삭제</Button>
                     </Card.Body>
                   </Card>
@@ -234,8 +261,8 @@ return (
         </Row>
         <PageSample isExpanded={isExpanded} page={page} handleChangePage={handleChangePage} searchFuc={searchFuc} />
       </Container>
-        <DiaryDetailModal showModal={showModal} setShowModal={setShowModal}/>
-        <DiaryFormModal showModal={showModal} setShowModal={setShowModal}/>
+        <DiaryDetailModal showDetailModal={showDetailModal} setShowDetailModal={setShowDetailModal} detailRecordId={detailRecordId}/>
+        <DiaryFormModal showFormModal={showFormModal} setShowFormModal={setShowFormModal}/>
     </Container>
   );
 };

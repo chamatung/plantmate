@@ -22,7 +22,23 @@ export const diaryListReducer = (state, action) => {
 
 function DiaryListStore(){
     const initialDiaryList = {
-        diaryList: [1,2],
+        diaryList: [{
+            recordId: 1,
+            title:'',
+            date: '',
+            nickName: '',
+            growthContent: '',
+            remarks: '',
+            photos: []
+        },{
+            recordId: 2,
+            title:'',
+            date: '',
+            nickName: '',
+            growthContent: '',
+            remarks: '',
+            photos: []
+        }], //성장일지 객체
         search: { //검색정보
             sort : "",
             searchType: "",
@@ -45,6 +61,18 @@ function DiaryListStore(){
                 console.log(response)
             })
     }
-    return { initialDiaryList, searchDiaryList };
+    const deleteDiary = (recordId, searchFuc) => {
+        if(window.confirm("삭제하시겠습니까 ?")) {
+            apiService.delete("growth", recordId)
+                .then((response) => {
+                    alert("삭제되었습니다.")
+                    searchFuc();
+                })
+                .catch((response) => {
+                    alert("삭제실패하였습니다.")
+                })
+        }
+    }
+    return { initialDiaryList, searchDiaryList, deleteDiary };
 };
 export default new DiaryListStore();

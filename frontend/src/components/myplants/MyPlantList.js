@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useReducer, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useReducer,
+  useRef,
+  useContext,
+} from "react";
 
 import {
   Container,
@@ -8,75 +14,94 @@ import {
   ListGroup,
   Button,
   Form,
+  Alert,
 } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import { GiWaterDrop } from "react-icons/gi";
 import MyPlantRegisterModal from "./MyPlantRegisterModal";
+import { useNavigate } from "react-router";
+import { MyPlantStateContext } from "../../context/MyPlantStore";
 //import Page from "../layout/Page";
 
-const reducer = (state, action) => {
-  let newState = [];
-  switch (action.type) {
-    case "INIT": {
-      return action.data;
-    }
-    case "CREATE": {
-      newState = [action.data, ...state];
-      break;
-    }
-    default:
-      return state;
-  }
+// const reducer = (state, action) => {
+//   let newState = [];
+//   switch (action.type) {
+//     case "INIT": {
+//       return action.data;
+//     }
+//     case "CREATE": {
+//       newState = [action.data, ...state];
+//       break;
+//     }
+//     default:
+//       return state;
+//   }
 
-  localStorage.setItem("myplant", JSON.stringify(newState));
-  return newState;
-};
+//   localStorage.setItem("myplant", JSON.stringify(newState));
+//   return newState;
+// };
 
-export const MyPlantStateContext = React.createContext();
-export const MyPlantDispatchContext = React.createContext();
+//export const MyPlantStateContext = React.createContext();
+//export const MyPlantDispatchContext = React.createContext();
 
 const MyPlantList = () => {
+  const navigate = useNavigate();
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [data, dispatch] = useReducer(reducer, []);
+  //const [data, dispatch] = useReducer(reducer, []);
+  const [data, setData] = useState([]);
+  const plantList = useContext(MyPlantStateContext);
 
   //초기 사이즈 확인 및 resize event mount시 추가 및 unmount시 삭제
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setIsExpanded(window.innerWidth >= 768);
-  //   };
-
-  //   handleResize();
-  //   window.addEventListener("resize", handleResize);
-
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
-
   useEffect(() => {
-    //localStorage.removeItem("myplant");
-    const localData = localStorage.getItem("myplant");
-    if (localData) {
-      const myPlantList = JSON.parse(localData).sort(
-        (a, b) => parseInt(b.id) - parseInt(a.id)
-      );
-      dataId.current = parseInt(myPlantList[0].id) + 1;
-      myPlantList.unshift(plants);
+    const handleResize = () => {
+      setIsExpanded(window.innerWidth >= 768);
+    };
 
-      dispatch({ type: "INIT", data: myPlantList });
-    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
-  const dataId = useRef(4);
+  useEffect(() => {
+    if (plantList.length >= 1) {
+      setData(plantList);
+    }
+  }, [plantList]);
 
-  const onCreate = (newData) => {
-    dispatch({
-      type: "CREATE",
-      data: newData,
-    });
-    dataId.current += 1;
-  };
+  // useEffect(() => {
+  //   //localStorage.removeItem("myplant");
+  //   const localData = localStorage.getItem("myplant");
+  //   if (localData) {
+  //     const myPlantList = JSON.parse(localData).sort(
+  //       (a, b) => parseInt(b.id) - parseInt(a.id)
+  //     );
+  //     dataId.current = parseInt(myPlantList[0].id) + 1;
+
+  //     dispatch({ type: "INIT", data: myPlantList });
+  //   }
+  // }, []);
+
+  // const dataId = useRef(0);
+
+  // const onCreate = ({ name, nickname, waterCycle, startDate }) => {
+  //   dispatch({
+  //     type: "CREATE",
+  //     data: {
+  //       id: dataId.current,
+  //       thumbnail: "https://source.unsplash.com/random/300x300/?plant",
+  //       name: name,
+  //       nickname: nickname,
+  //       waterCycle: waterCycle,
+  //       startDate: startDate,
+  //     },
+  //   });
+  //   dataId.current += 1;
+  // };
 
   const plants = [
     {
@@ -127,6 +152,18 @@ const MyPlantList = () => {
 
   const handleModalClose = () => {
     setShowModal(false);
+  };
+
+  const handleCardHover = (e) => {
+    e.currentTarget.classList.add("card-hover");
+  };
+
+  const handleCardLeave = (e) => {
+    e.currentTarget.classList.remove("card-hover");
+  };
+
+  const handleCardClick = (id) => {
+    navigate(`/my-plants/${id}`);
   };
 
   return (
@@ -228,42 +265,58 @@ const MyPlantList = () => {
           }}
         >
           <Row>
-            {data.map((plant) => (
-              <Col md={3} key={plant.id}>
-                <Card className="mb-4">
-                  <Card.Img variant="top" src={plant.thumbnail} />
-                  {plant.waterAlarm === "Y" && plant.waterMark === "Y" && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                        zIndex: 1,
-                      }}
-                    >
-                      <GiWaterDrop size="3em" color="skyblue" />
-                    </div>
-                  )}
-                  <Card.Body>
-                    <Card.Title>{plant.nickname}</Card.Title>
-                    <Card.Subtitle>{plant.name}</Card.Subtitle>
-                    <ListGroup variant="flush">
-                      <ListGroup.Item>
-                        <strong>{plant.startDate}</strong> 부터 키우기 시작
-                      </ListGroup.Item>
-                      <ListGroup.Item>
-                        <strong>{plant.waterCycle}</strong> 일 마다 물 주기
-                      </ListGroup.Item>
-                    </ListGroup>
-                  </Card.Body>
-                  {/* <Card.Footer>
-                    <Button variant="primary" size="sm" block>
-                      {plant.waterMark && <GiWaterDrop />}
-                    </Button>
-                  </Card.Footer> */}
-                </Card>
-              </Col>
-            ))}
+            {data.length > 0 ? (
+              data.map((plant) => (
+                <Col md={3} key={plant.id}>
+                  <Card
+                    className="mb-4"
+                    onMouseEnter={handleCardHover}
+                    onMouseLeave={handleCardLeave}
+                    onClick={() => handleCardClick(plant.id)}
+                  >
+                    <Card.Img variant="top" src={plant.thumbnail} />
+                    {plant.waterAlarm === "Y" && plant.waterMark === "Y" && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "10px",
+                          right: "10px",
+                          zIndex: 1,
+                        }}
+                      >
+                        <GiWaterDrop size="3em" color="skyblue" />
+                      </div>
+                    )}
+                    <Card.Body>
+                      <Card.Title>{plant.nickname}</Card.Title>
+                      <Card.Subtitle>{plant.name}</Card.Subtitle>
+                      <ListGroup variant="flush">
+                        <ListGroup.Item>
+                          <strong>{plant.startDate}</strong> 부터 키우기 시작
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                          <strong>{plant.waterCycle}</strong> 일 마다 물 주기
+                        </ListGroup.Item>
+                      </ListGroup>
+                    </Card.Body>
+                    {/* <Card.Footer>
+                      <Button variant="primary" size="sm" block>
+                        {plant.waterMark && <GiWaterDrop />}
+                      </Button>
+                    </Card.Footer> */}
+                  </Card>
+                </Col>
+              ))
+            ) : (
+              <Alert
+                key={"success"}
+                variant={"success"}
+                style={{ height: "250px", padding: "80px" }}
+              >
+                <Alert.Heading>등록된 내 식물이 없습니다.</Alert.Heading>
+                <p>하단의 등록버튼을 클릭하여 식물을 등록해보세요.</p>
+              </Alert>
+            )}
           </Row>
         </Row>
         <div
@@ -284,14 +337,14 @@ const MyPlantList = () => {
         </div>
         {/* <Page isExpanded={isExpanded} /> */}
       </Container>
-      <MyPlantStateContext.Provider value={data}>
-        <MyPlantDispatchContext.Provider value={{ onCreate }}>
-          <MyPlantRegisterModal
-            showModal={showModal}
-            onClose={handleModalClose}
-          ></MyPlantRegisterModal>
-        </MyPlantDispatchContext.Provider>
-      </MyPlantStateContext.Provider>
+      {/* <MyPlantStateContext.Provider value={data}>
+        <MyPlantDispatchContext.Provider value={{ onCreate }}> */}
+      <MyPlantRegisterModal
+        showModal={showModal}
+        onClose={handleModalClose}
+      ></MyPlantRegisterModal>
+      {/* </MyPlantDispatchContext.Provider>
+      </MyPlantStateContext.Provider> */}
     </Container>
   );
 };

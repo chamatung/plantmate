@@ -18,6 +18,11 @@ function ApiService() {
       config.params = params;
       return Api.delete(`${apiPrefix}/${apiUri}`, config);
     },
+    patch: (apiUri, params, config) => {
+      config = config || {};
+      config.params = params;
+      return Api.patch(`${apiPrefix}/${apiUri}`, config);
+    }
   };
 }
 

@@ -30,7 +30,7 @@ const Header = () => {
               id='my-plants-dropdown'
               className='nav-link'
             >
-              <NavDropdown.Item href='my-plants' className='nav-link select'>
+              <NavDropdown.Item href='/my-plants' className='nav-link select'>
                 내식물
               </NavDropdown.Item>
               <NavDropdown.Item

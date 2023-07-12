@@ -4,13 +4,14 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-import {RootStore} from "./context/RootStore";
+import { RootStore } from "./context/RootStore";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <RootStore>
-        <App />
+      <App />
     </RootStore>
   </BrowserRouter>
 );

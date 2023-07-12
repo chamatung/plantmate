@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import { Modal, Form, Button } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
-import { MyPlantDispatchContext } from "./MyPlantList";
+import { MyPlantDispatchContext } from "../../context/MyPlantStore";
+//import { MyPlantDispatchContext } from "./MyPlantList";
 //import "../../styles/myplant.css";
 
 const MyPlantRegisterModal = ({ showModal, onClose }) => {
@@ -16,7 +17,8 @@ const MyPlantRegisterModal = ({ showModal, onClose }) => {
     waterCycle: "",
     nickname: "",
     name: "",
-    thumbnail: "https://source.unsplash.com/random/300x300/?plant",
+    //thumbnail: "",
+    memo: "",
   });
   const [waterAlarm, setWaterAlram] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -42,6 +44,7 @@ const MyPlantRegisterModal = ({ showModal, onClose }) => {
       waterCycle: "",
       nickname: "",
       name: "",
+      memo: "",
     });
   };
 
@@ -54,19 +57,6 @@ const MyPlantRegisterModal = ({ showModal, onClose }) => {
     onClose();
     navigate("/my-plants", { replace: true });
   };
-
-  // const [startDate, setStartDate] = useState(
-  //   new Date().toISOString().split("T")[0]
-  // );
-  // const [waterDate, setWaterDate] = useState(
-  //   new Date().toISOString().split("T")[0]
-  // );
-
-  // const [waterCycleValue, setWaterCycleValue] = useState("");
-
-  // const handleWaterCycleChange = (value) => {
-  //   setWaterCycleValue(value);
-  // };
 
   return (
     <Modal show={showModal} onHide={onClose}>
@@ -184,6 +174,19 @@ const MyPlantRegisterModal = ({ showModal, onClose }) => {
               onChange={handleInputChange}
               name="waterDate"
               value={inputs.waterDate}
+            />
+          </Form.Group>
+
+          {/* 메모 */}
+          <Form.Group className="mb-3">
+            <Form.Label>메모</Form.Label>
+            <Form.Control
+              as="textarea"
+              onChange={handleInputChange}
+              name="memo"
+              rows={3}
+              value={inputs.memo}
+              placeholder=""
             />
           </Form.Group>
         </Form>
