@@ -4,11 +4,16 @@
   font-weight: normal;
   font-style: normal; 
 }
+@import url(//fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+.jejugothic * { 
+ font-family: 'Jeju Gothic', sans-serif;
+}
 
 .App {
   text-align: center;
   font-size: 10px;  
-  
+  font-family: 'Jeju Gothic', sans-serif;
 }
 
 .App-logo {

@@ -3,6 +3,7 @@ import SampleHome from "./SampleHome";
 import Community from "./community/Community";
 import CommunityPostRegister from "./community/CommunityPostRegister";
 import CommunityPostDetail from "./community/CommunityPostDetail";
+import CommunityBookmark from "./community/CommunityBookmark";
 import GrowthDiaryList from "./diary/GrowthDiaryList";
 import MyPlantList from "./myplants/MyPlantList";
 
@@ -25,6 +26,7 @@ const Main = () => {
           path="/community/post-detail/:id"
           element={<CommunityPostDetail />}
         />
+        <Route path="/community/bookmark" element={<CommunityBookmark />} />
         <Route
           path="/my-plants"
           element={

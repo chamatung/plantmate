@@ -11,3 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.mw-95{
+  max-width: 950px !important;
+}
+
+/* 커뮤니티 css */
+.post-area{
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.post-area p {
+  float:left
+}
+.user-area img {
+  width:30px;
+  height:30px;
+}

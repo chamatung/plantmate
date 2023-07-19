@@ -3,6 +3,7 @@ import { Container, Form, Row, Col, Button } from "react-bootstrap";
 import { useState } from "react";
 import { GiConsoleController } from "react-icons/gi";
 import { useNavigate } from "react-router";
+import apiService from "../../services/ApiService";
 
 /*
     커뮤니티 게시글 등록 화면
@@ -12,7 +13,6 @@ import { useNavigate } from "react-router";
 const CommunityPostRegister = () => {
   const navigate = useNavigate();
   // 뒤로 가기
-
   const handleGoBack = () => {
     navigate(-1);
   };
@@ -44,13 +44,22 @@ const CommunityPostRegister = () => {
 
   // 게시글 등록 함수
   const handlePostRegister = () => {
-    console.log("title", title);
-    console.log("category", category);
-    console.log("content", content);
+    const params = {
+      title: title,
+      category: category,
+      content: content,
+    };
+    apiService.post("community", params).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
+        alert("등록되었습니다.");
+        handleGoBack();
+      }
+    });
   };
 
   return (
-    <Container>
+    <div className="container mw-95">
       <Form>
         <Row className="mb-3">
           <Col xs={2}>
@@ -58,9 +67,11 @@ const CommunityPostRegister = () => {
               style={{ width: "100%" }}
               onChange={handleChangeCategory}
             >
-              <option value="1">자랑해요</option>
-              <option value="2">식물정보</option>
-              <option value="3">질문해요</option>
+              <option value="B">자랑해요</option>
+              <option value="L">생활정보</option>
+              <option value="A">질문해요</option>
+              <option value="S">정보공유</option>
+              <option value="C">봐주세요</option>
             </Form.Select>
           </Col>
           <Col xs={10}>
@@ -109,7 +120,7 @@ const CommunityPostRegister = () => {
           </Button>
         </Col>
       </Row>
-    </Container>
+    </div>
   );
 };
 
